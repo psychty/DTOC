@@ -1,0 +1,24 @@
+.dygraph-title {
+  color: #327d9c;
+  font-weight: bold;
+  text-align: left;
+}
+
+.dygraph-axis-label {
+  font-family: calibri;
+  font-size: 100%;
+}
+
+.dygraph-label {
+  font-family: calibri;
+  font-weight: bold;
+  font-size: 90%;
+}
+
+.dygraph-legend > span {
+  display:none;
+}
+
+.dygraph-legend > span.highlight {
+ display: inline; 
+}
