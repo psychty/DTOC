@@ -1,3 +1,4 @@
+
 # Packages
 library(readr)
 library(readxl)
@@ -11,35 +12,32 @@ library(tidyr)
 
 # DToC Days ####
 
-# Downloading files ####
-# localDToCDir = './Data/DToC/Days'
-# if (!file.exists(localDToCDir)) {
-#   dir.create(localDToCDir)}
-
 # You can check the directory with getwd()
-# setwd("//typhon/groups2.bu/Public Health Directorate/PH Research Unit/R")
-
 getwd()
 
 # This is a command to create a sub-directory if it does not exist in the working directory
-if (!file.exists("./Delayed Transfers of Care")) {
-  dir.create("./Delayed Transfers of Care")}
+if (!file.exists("~/Delayed Transfers of Care")) {
+  dir.create("~/Delayed Transfers of Care")}
 
 # This is a command to create a sub-directory if it does not exist in the working directory
-if (!file.exists("./Delayed Transfers of Care/Data")) {
-  dir.create("./Delayed Transfers of Care/Data")}
+if (!file.exists("~/Delayed Transfers of Care/Data")) {
+  dir.create("~/Delayed Transfers of Care/Data")}
 
 # Any new months of data can be downloaded using R, just copy the 'Total Delayed Days Local Authority' file for the month and paste it into the download.file("", "./Delayed Transfers of Care/Data/x .xls", mode = "wb"). The mode = "wb" saves it as a binary file.
 
-
-if (!file.exists("./Delayed Transfers of Care/Data/Nov_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/01/LA-Type-B-November-2018-KP66i.xls","./Delayed Transfers of Care/Data/Nov_18.xls", mode = "wb")}
-if (!file.exists("./Delayed Transfers of Care/Data/Oct_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-October-2018-YZRqX.xls","./Delayed Transfers of Care/Data/Oct_18.xls", mode = "wb")}
-if (!file.exists("./Delayed Transfers of Care/Data/Sep_118.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-September-2018-6wN4m.xls", "./Delayed Transfers of Care/Data/Sep_18.xls", mode = "wb")}
-if (!file.exists("./Delayed Transfers of Care/Data/Aug_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-August-2018-Ttm83.xls", "./Delayed Transfers of Care/Data/Aug_18.xls", mode = "wb")}
-if (!file.exists("./Delayed Transfers of Care/Data/July_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-July-2018-214eB.xls", "./Delayed Transfers of Care/Data/July_18.xls", mode = "wb")}
-if (!file.exists("./Delayed Transfers of Care/Data/June_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-June-2018-h42A6.xls", "./Delayed Transfers of Care/Data/June_18.xls", mode = "wb")}
-if (!file.exists("./Delayed Transfers of Care/Data/May_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-May-2018-In8gv.xls", "./Delayed Transfers of Care/Data/May_18.xls", mode = "wb")}
-if (!file.exists("./Delayed Transfers of Care/Data/April_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-April-2018-5QZj0.xls", "./Delayed Transfers of Care/Data/April_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Apr_19.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/06/LA-Type-B-April-2019-K35jY.xls","./Delayed Transfers of Care/Data/Apr_19.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Mar_19.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-March-2019-9c5JC.xls","./Delayed Transfers of Care/Data/Mar_19.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Feb_19.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-February-2019-Fk0FS.xls","./Delayed Transfers of Care/Data/Feb_19.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Jan_19.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-January-2019-mxX03.xls","./Delayed Transfers of Care/Data/Jan_19.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Dec_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-December-2018-JPuaa.xls","./Delayed Transfers of Care/Data/Dec_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Nov_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-November-2018-rDU26.xls","./Delayed Transfers of Care/Data/Nov_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Oct_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-October-2018-7VM1o.xls","./Delayed Transfers of Care/Data/Oct_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Sep_118.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-September-2018-Je0H7.xls", "./Delayed Transfers of Care/Data/Sep_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/Aug_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-August-2018-uwfNj.xls", "./Delayed Transfers of Care/Data/Aug_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/July_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-July-2018-VYly2.xls", "./Delayed Transfers of Care/Data/July_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/June_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-June-2018-L7vym.xls", "./Delayed Transfers of Care/Data/June_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/May_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-May-2018-cuifB.xls", "./Delayed Transfers of Care/Data/May_18.xls", mode = "wb")}
+if (!file.exists("./Delayed Transfers of Care/Data/April_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-April-2018-e2c97.xls", "./Delayed Transfers of Care/Data/April_18.xls", mode = "wb")}
 if (!file.exists("./Delayed Transfers of Care/Data/March_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-March-2018-a8wRN.xls", "./Delayed Transfers of Care/Data/March_18.xls", mode = "wb")}
 if (!file.exists("./Delayed Transfers of Care/Data/Feb_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-February-2018-AeE94.xls", "./Delayed Transfers of Care/Data/Feb_18.xls", mode="wb")}
 if (!file.exists("./Delayed Transfers of Care/Data/Jan_18.xls")) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2018/12/LA-Type-B-January-2018-D7csN.xls", "./Delayed Transfers of Care/Data/Jan_18.xls", mode="wb")}
@@ -186,6 +184,12 @@ Days_organisation <- data.frame(SHA = factor(), Code = factor(), Name = factor()
 
 for (i in 1:length(list.files("./Delayed Transfers of Care/Data")))   {
   Month <- read_excel(paste("./Delayed Transfers of Care/Data", list.files("./Delayed Transfers of Care/Data")[i], sep="/"), sheet = "LA - by responsible org", skip = 13)
+  
+  Month <- Month %>% 
+    select(1:7)
+  
+  colnames(Month) <- c("Region", "ONS Geography", "Code", "Name", "NHS", "Social Care", "Both")
+  
   Month$Period_year <- as.character(read_excel(paste("./Delayed Transfers of Care/Data", list.files("./Delayed Transfers of Care/Data")[i], sep="/"), sheet = "LA - by responsible org", range = "R5C3:R5C3", col_names = FALSE))
   colnames(Month)[colnames(Month) == "ONS Geography"] <- "Code"
   Days_organisation <- rbind.fill(Days_organisation, Month) # This adds the data to a bigger dataframe called Days_reason (which we set up earlier)

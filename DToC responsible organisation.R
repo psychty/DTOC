@@ -1,10 +1,16 @@
 # Delayed Transfers of Care - source - NHS Statistics
 
-library(png); library(gridExtra); library(plyr); library(dplyr);library(tidyr); library(reshape2); library(scales); library(ggplot2); library(xts); library(dygraphs); library(grid); library(readr); library(xlsx)
+library(easypackages)
+
+libraries("png", "gridExtra", "xlsx", "plyr", "dplyr", "tidyverse", "reshape2", "scales", "xts", "dygraphs", "grid", "htmlwidgets")
+
+# Read in JSNA logo (only download it if it is not available in your working directory)
+if(!file.exists("./Research Unit.png")){download.file("http://jsna.westsussex.gov.uk/wp-content/uploads/2017/12/Research-Unit.png", "./Research Unit.png", mode = 'wb')} # This downloads a png image from the West Sussex JSNA website and saves it to your working directory. The if(!file.exists()) only runs the command if the file does not exist (because we have included an ! at the beginning)
+jsna = readPNG("./Research Unit.png")
 
 ch_area = "West Sussex"
 
-Days_organisation <- read_csv("./Delayed Transfers of Care/DToC_Days_Responsible_Organisation_created_January_2018.csv")
+Days_organisation <- read_csv("./Delayed Transfers of Care/DToC_Days_Responsible_Organisation_created_June_2019.csv")
 
 # This is the template for charts
 DToC_theme = function(){
@@ -27,29 +33,32 @@ DToC_theme = function(){
 }
 
 
-Days_organisation$Month <- paste("01", Days_organisation$Period_year, sep = " ")
-Days_organisation$Month <- as.Date(Days_organisation$Month, format = "%d %b %Y")
+Days_organisation <- Days_organisation %>% 
+  mutate(Month = as.Date(paste0("01 ", Period_year), format = "%d %b %Y")) %>% 
+  arrange(Month)
 
-Days_organisation <- arrange(Days_organisation, Month)
 month_order <-  as.character(unique(Days_organisation$Period_year))
 
 # Days Delayed ####
-Days_organisation$Period_year <- factor(Days_organisation$Period_year, levels = month_order)
-
-# Arrange the data
-Days_organisation <- arrange(Days_organisation, Name, Period_year)
-Days_organisation$Perc_NHS <- Days_organisation$NHS/Days_organisation$Total
-Days_organisation$Perc_Social_care <- Days_organisation$`Social Care`/Days_organisation$Total
-Days_organisation$Perc_Both <- Days_organisation$Both/Days_organisation$Total
+Days_organisation <- Days_organisation %>% 
+  mutate(Period_year = factor(Period_year, levels = month_order)) %>% 
+  arrange(Name, Period_year) %>% 
+  mutate(NHS = as.numeric(NHS)) %>% 
+  mutate(`Social Care` = as.numeric(`Social Care`)) %>%  
+  mutate(Both = as.numeric(Both)) %>% 
+  mutate(Total = NHS + `Social Care` + Both) %>% 
+  mutate(Perc_NHS = NHS/Total) %>% 
+  mutate(Perc_Social_care = `Social Care`/Total) %>% 
+  mutate(Perc_Both = Both/Total)
 
 
 
 Chosen_DToC_days <- subset(Days_organisation, Name == ch_area)
 
 # We need to put the data into long format format to plot a stacked bar chart
-Chosen_DToC_days_long <- gather(Chosen_DToC_days[c("Name","Period_year","NHS","Social Care","Both")], key = "Organisation", value = "Days", NHS:Both)
-Chosen_DToC_days_long$Organisation <- factor(Chosen_DToC_days_long$Organisation, levels = c("Both", "Social Care", "NHS"))
-Chosen_DToC_days_long <- arrange(Chosen_DToC_days_long, Organisation)
+Chosen_DToC_days_long <- gather(Chosen_DToC_days[c("Name","Period_year","NHS","Social Care","Both")], key = "Organisation", value = "Days", NHS:Both) %>% 
+  mutate(Organisation = factor(Organisation, levels = c("Both", "Social Care", "NHS"))) %>% 
+ arrange(Organisation)
 
 # total_days <- Chosen_DToC_days_long %>% group_by(Period_year) %>% summarise(sum(Days))
 
