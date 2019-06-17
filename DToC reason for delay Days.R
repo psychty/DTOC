@@ -22,7 +22,7 @@ Days_reason <- Days_reason %>%
 # Local Authorities ####
 
 # for (i in 1:length(authorities)){
-chosen_area = "West Sussex"
+chosen_area = "Portsmouth"
 
 # Time series (interactive) ####
 DToC_Monthly_LA <- Days_reason %>% 

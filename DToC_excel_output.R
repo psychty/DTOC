@@ -40,7 +40,7 @@ Days_organisation <- read_csv("./Delayed Transfers of Care/DToC_Days_Responsible
   mutate(Month = paste("01", Period_year, sep = " ")) %>% 
   mutate(Month = as.Date(Month, format = "%d %b %Y")) %>% 
   arrange(Month) %>% 
-  filter(Period_year %in% c("November 2016",  "December 2016",  "January 2017",   "February 2017",  "March 2017", "April 2017",  "May 2017",  "June 2017","July 2017","August 2017","September 2017","October 2017","November 2017","December 2017","January 2018","February 2018","March 2018","April 2018","May 2018","June 2018","July 2018","August 2018","September 2018", "October 2018", "November 2018" ))
+  filter(Period_year %in% c("November 2016",  "December 2016",  "January 2017",   "February 2017",  "March 2017", "April 2017",  "May 2017",  "June 2017","July 2017","August 2017","September 2017","October 2017","November 2017","December 2017","January 2018","February 2018","March 2018","April 2018","May 2018","June 2018","July 2018","August 2018","September 2018", "October 2018", "November 2018", "December 2018", "January 2019", "February 2019", "March 2019", "April 2019"))
 
 month_order <-  as.character(unique(Days_organisation$Period_year))
 

@@ -8,7 +8,7 @@ libraries("png", "gridExtra", "xlsx", "plyr", "dplyr", "tidyverse", "reshape2", 
 if(!file.exists("./Research Unit.png")){download.file("http://jsna.westsussex.gov.uk/wp-content/uploads/2017/12/Research-Unit.png", "./Research Unit.png", mode = 'wb')} # This downloads a png image from the West Sussex JSNA website and saves it to your working directory. The if(!file.exists()) only runs the command if the file does not exist (because we have included an ! at the beginning)
 jsna = readPNG("./Research Unit.png")
 
-ch_area = "West Sussex"
+ch_area = "Portsmouth"
 
 Days_organisation <- read_csv("./Delayed Transfers of Care/DToC_Days_Responsible_Organisation_created_June_2019.csv")
 
@@ -51,8 +51,6 @@ Days_organisation <- Days_organisation %>%
   mutate(Perc_Social_care = `Social Care`/Total) %>% 
   mutate(Perc_Both = Both/Total)
 
-
-
 Chosen_DToC_days <- subset(Days_organisation, Name == ch_area)
 
 # We need to put the data into long format format to plot a stacked bar chart
@@ -75,6 +73,11 @@ chosen_DToC_chart <- ggplot(data = Chosen_DToC_days_long, aes(x = Period_year, y
 png("./Delayed Transfers of Care/Chosen_area_DToC_Chart.png", height = 1000, width = 2000, res = 200, pointsize = 16)
 chosen_DToC_chart
 dev.off()
+
+png(paste0("./Delayed Transfers of Care/",ch_area,"_DToC_Chart.png"), height = 1000, width = 2000, res = 200, pointsize = 16)
+chosen_DToC_chart
+dev.off()
+# We have saved two versions of this chart, one which can be used later in other outputs (this has a generic file name) and another with the chosen area in the file name.
 
 # Output ####
 
@@ -221,12 +224,14 @@ for(i in 2:10){
 sheet <- createSheet(wb, sheetName = "Figure 1.1")
 # Add a title to the sheet
 
-xlsx.addTitle(sheet, rowIndex = 1, title = paste("Figure 1.1 Number of bed days lost due to delayed transfers of care during each reporting period; ", month_order[1]," to ", month_order[length(month_order)],")", sep = ""),titleStyle = TITLE_STYLE)
+#xlsx.addTitle(sheet, rowIndex = 1, title = paste("Figure 1.1 Number of bed days lost due to delayed transfers of care during each reporting period; ", month_order[1]," to ", month_order[length(month_order)],")", sep = ""),titleStyle = TITLE_STYLE)
 
 # Add the plot created previously
 addPicture("./Delayed Transfers of Care/Chosen_area_DToC_Chart.png", sheet, scale = 1, startRow = 4, startColumn = 1)
 
 saveWorkbook(wb, file = paste("./Delayed Transfers of Care/Delayed Transfers of Care Days ", ch_area, " to ",month_order[length(month_order)],".xlsx", sep = ""))
+
+file.remove("./Delayed Transfers of Care/Chosen_area_DToC_Chart.png")
 
 # WHAT ABOUT CALENDAR ADJUSTMENT ####
 # Average daily days rather than totals per month as months do not have equal lengths #
