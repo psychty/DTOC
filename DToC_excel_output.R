@@ -33,14 +33,12 @@ DToC_theme = function(){
 }
 
 
-if (!file.exists("./Delayed Transfers of Care/DToC_Days_Responsible_Organisation_created_June_2019.csv")) {
-source("./Delayed Transfers of Care/Delayed Transfers of Care data collation.R")}
-
-Days_organisation <- read_csv("./Delayed Transfers of Care/DToC_Days_Responsible_Organisation_created_June_2019.csv",col_types = cols(Name = col_character(),NHS = col_integer(),`Social Care` = col_integer(),Both = col_integer(),Total = col_integer(),Period_year = col_character())) %>% 
+Days_organisation <- read_csv("./Delayed Transfers of Care/DToC_Days_Responsible_Organisation_created_July_2019.csv",col_types = cols(Name = col_character(),NHS = col_integer(),`Social Care` = col_integer(),Both = col_integer(),Total = col_integer(),Period_year = col_character())) %>% 
   mutate(Month = paste("01", Period_year, sep = " ")) %>% 
   mutate(Month = as.Date(Month, format = "%d %b %Y")) %>% 
   arrange(Month) %>% 
-  filter(Period_year %in% c("November 2016",  "December 2016",  "January 2017",   "February 2017",  "March 2017", "April 2017",  "May 2017",  "June 2017","July 2017","August 2017","September 2017","October 2017","November 2017","December 2017","January 2018","February 2018","March 2018","April 2018","May 2018","June 2018","July 2018","August 2018","September 2018", "October 2018", "November 2018", "December 2018", "January 2019", "February 2019", "March 2019", "April 2019"))
+  filter(Period_year %in% c("November 2016",  "December 2016",  "January 2017",   "February 2017",  "March 2017", "April 2017",  "May 2017",  "June 2017","July 2017","August 2017","September 2017","October 2017","November 2017","December 2017","January 2018","February 2018","March 2018","April 2018","May 2018","June 2018","July 2018","August 2018","September 2018", "October 2018", "November 2018", "December 2018", "January 2019", "February 2019", "March 2019", "April 2019")) %>% 
+  mutate(Total = NHS + `Social Care` + Both)
 
 month_order <-  as.character(unique(Days_organisation$Period_year))
 
@@ -62,7 +60,8 @@ Chosen_DToC_days_long <- Chosen_DToC_days %>%
   mutate(Organisation = factor(Organisation, levels = c("Both", "Social Care", "NHS"))) %>% 
   arrange(Organisation) 
 
-chosen_DToC_chart <- ggplot(data = Chosen_DToC_days_long, aes(x = Period_year, y = Days, fill = Organisation)) + 
+
+chosen_DToC_chart <-   ggplot(data = Chosen_DToC_days_long, aes(x = Period_year, y = Days, fill = Organisation)) + 
   geom_bar(stat = "identity", width = 0.8) +
   scale_y_continuous(breaks = seq(0, round_any(max(Chosen_DToC_days$Total), 500, ceiling), ifelse(round_any(max(Chosen_DToC_days$Total), 500, ceiling) < 5000, 250, 500)), expand = c(0.01,0), limits = c(0, round_any(max(Chosen_DToC_days$Total), 500, ceiling)), labels = comma) +   scale_fill_manual(values = c("#4F81BD","#C0504D", "#000000"), limits = c("NHS","Social Care", "Both"), labels = c("NHS","Social Care", "Both NHS and Social Care"), name = "Delay attributed to") +  
   ylab("Delayed Days") +
@@ -72,9 +71,9 @@ chosen_DToC_chart <- ggplot(data = Chosen_DToC_days_long, aes(x = Period_year, y
   theme(legend.position = "top", legend.direction = "horizontal", legend.text = element_text(size = 8), legend.title = element_text(size = 8), legend.key.size = unit(.75, "lines"))  
 
 
-ggsave(paste0("./Delayed Transfers of Care/",ch_area ,"_DToC_Chart_", month_order[1], " - ",month_order[length(month_order)] ,".png"), plot = chosen_DToC_chart, width = 8, height = 4, dpi = 300, type = 'cairo')
+ggsave(paste0("./Delayed Transfers of Care/",ch_area ,"_DToC_Chart_", month_order[1], " - ",month_order[length(month_order)] ,".png"), plot = chosen_DToC_chart, width = 8, height = 4, dpi = 300)
 
-Total_DToC <- read_csv("./Delayed Transfers of Care/DToC_Days_Reason_for_Delay_created_January_2019.csv")
+Total_DToC <- read_csv("./Delayed Transfers of Care/DToC_Days_Reason_for_Delay_created_July_2019.csv")
 
 Total_DToC$Date <- paste("01 ", Total_DToC$Period, sep = "")
 Total_DToC$Date <- as.Date(Total_DToC$Date, "%d %B %Y")
@@ -113,12 +112,11 @@ chosen_DToC_control_chart <- ggplot(data = Org_DToC, aes(x = Period, y = `Total 
   labs(caption = "Note: Y axis does not start at zero.\nThe dashed inner and outer lines represent 95% (2 SD) and 99% (3 SD) control limits respectively\nThe solid line represents the long term average\nSource: NHS England: Monthly Situation Report")
 
 
-ggsave(paste0("./Delayed Transfers of Care/",ch_area ,"_DToC_control_chart_", month_order[1], " - ",month_order[length(month_order)] ,".png"), plot = chosen_DToC_control_chart, width = 8, height = 4, dpi = 300, type = 'cairo')
+ggsave(paste0("./Delayed Transfers of Care/",ch_area ,"_DToC_control_chart_", month_order[1], " - ",month_order[length(month_order)] ,".png"), plot = chosen_DToC_control_chart, width = 8, height = 4, dpi = 300)
 
 # Output ####
 
 Chosen_DToC_days_tb <- as.data.frame(Chosen_DToC_days[c("Name","Period_year","NHS","Social Care","Both","Total","Perc_NHS", "Perc_Social_care", "Perc_Both")])
-
 
 # create a new workbook for outputs
 # possible values for type are : "xls" and "xlsx"
@@ -265,7 +263,7 @@ setCellValue(cells[[2,2]], paste("Figure 1.1 Number of bed days lost due to dela
 setCellStyle(cells[[2,2]], cs_title)
 
 # Add the plot created previously
-addPicture("./Delayed Transfers of Care/Chosen_area_DToC_Chart.png", sheet, scale = 1, startRow = 4, startColumn = 1)
+addPicture(paste0("./Delayed Transfers of Care/",ch_area, "_DToC_Chart_", month_order[1], " - ",month_order[length(month_order)] ,".png"), sheet, scale = 1, startRow = 4, startColumn = 1)
 
 # Figure 1.2 ####
 
