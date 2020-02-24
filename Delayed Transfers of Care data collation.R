@@ -34,7 +34,7 @@ if (!file.exists(paste0(github_repo_dir, "/DTOC_data/Jan_19.xls"))) {download.fi
 if (!file.exists(paste0(github_repo_dir, "/DTOC_data/Dec_18.xls"))) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/09/LA-Type-B-December-2018-82pwz.xls",paste0(github_repo_dir, "/DTOC_data/Dec_18.xls"), mode = "wb")}
 if (!file.exists(paste0(github_repo_dir, "/DTOC_data/Nov_18.xls"))) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/09/LA-Type-B-November-2018-253WD.xls",paste0(github_repo_dir, "/DTOC_data/Nov_18.xls"), mode = "wb")}
 if (!file.exists(paste0(github_repo_dir, "/DTOC_data/Oct_18.xls"))) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-October-2018-7VM1o.xls",paste0(github_repo_dir, "/DTOC_data/Oct_18.xls"), mode = "wb")}
-if (!file.exists(paste0(github_repo_dir, "/DTOC_data/Sep_118.xls"))) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-September-2018-Je0H7.xls", paste0(github_repo_dir, "/DTOC_data/Sep_18.xls"), mode = "wb")}
+if (!file.exists(paste0(github_repo_dir, "/DTOC_data/Sep_18.xls"))) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-September-2018-Je0H7.xls", paste0(github_repo_dir, "/DTOC_data/Sep_18.xls"), mode = "wb")}
 if (!file.exists(paste0(github_repo_dir, "/DTOC_data/Aug_18.xls"))) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-August-2018-uwfNj.xls", paste0(github_repo_dir, "/DTOC_data/Aug_18.xls"), mode = "wb")}
 if (!file.exists(paste0(github_repo_dir, "/DTOC_data/July_18.xls"))) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-July-2018-VYly2.xls", paste0(github_repo_dir, "/DTOC_data/July_18.xls"), mode = "wb")}
 if (!file.exists(paste0(github_repo_dir, "/DTOC_data/June_18.xls"))) {download.file("https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2019/05/LA-Type-B-June-2018-L7vym.xls", paste0(github_repo_dir, "/DTOC_data/June_18.xls"), mode = "wb")}
@@ -184,23 +184,23 @@ Days_reason <- Days_reason %>%
          `Total Delayed Transfers of Care` = gsub(",","",`Total Delayed Transfers of Care`)) %>% 
   filter(!(Name %in% c("Resident in Scotland","Resident In Wales","Resident outside GB", "City Of London")))
 
-write.csv(Days_reason, paste0(github_repo_dir,"/DToC_Days_Reason_for_Delay.csv"), row.names = FALSE, na = "NA")
-write.csv(Days_reason, "~/Documents/Repositories/spc/DToC_Days_Reason_for_Delay.csv", row.names = FALSE, na = "NA")
+write.csv(Days_reason, paste0(github_repo_dir,"/DToC_Days_Reason_for_Delay.csv"), row.names = FALSE)
+write.csv(Days_reason, "~/Documents/Repositories/spc/DToC_Days_Reason_for_Delay.csv", row.names = FALSE)
 
 # DToC by responsible organisation ####
 
 # Create an empty df ready to put in all the data
-Days_organisation <- data.frame(SHA = factor(), Code = factor(), Name = factor(), NHS = integer(),`Social Care` = integer(), Both = integer(),Total = integer(), check.names = FALSE)
+Days_organisation <- data.frame(Code = factor(), Name = factor(), NHS = integer(),`Social Care` = integer(), Both = integer(), check.names = FALSE)
 
 for (i in 1:length(list.files(paste0(github_repo_dir, "/DTOC_data"))))   {
-  Month <- read_excel(paste0(github_repo_dir, "/DTOC_data/", list.files(paste0(github_repo_dir, "/DTOC_data"))[i]), sheet = 3, skip = 13) %>% 
-    select(1:7)
-  
-colnames(Month) <- c("Region", "ONS Geography", "Code", "Name", "NHS", "Social Care", "Both")
-  
-  Month <- Month %>% 
-    mutate(Period_year = as.character(read_excel(paste0(github_repo_dir, "/DTOC_data/", list.files(paste0(github_repo_dir, "/DTOC_data"))[i]), sheet = 3, range = "R5C3:R5C3", col_names = FALSE))) %>% 
-    rename(Code = `ONS Geography`)
+
+    Month <- read_excel(paste0(github_repo_dir, "/DTOC_data/", list.files(paste0(github_repo_dir, "/DTOC_data"))[i]), sheet = 3, skip = 13,  .name_repair = "universal") %>% 
+    rename_at(vars(contains('NHS...5')), funs(sub('NHS...5', 'NHS', .))) %>% 
+    rename_at(vars(contains('Social.Care...6')), funs(sub('Social.Care...6', 'Social Care', .))) %>% 
+    rename_at(vars(contains('Social.Care')), funs(sub('Social.Care', 'Social Care', .))) %>% 
+    rename_at(vars(contains('Both...7')), funs(sub('Both...7', 'Both', .))) %>% 
+      select(Code, Name, NHS, `Social Care`, Both) %>% 
+    mutate(Period_year = as.character(read_excel(paste0(github_repo_dir, "/DTOC_data/", list.files(paste0(github_repo_dir, "/DTOC_data"))[i]), sheet = 3, range = "R5C3:R5C3", col_names = FALSE)))
   
   Days_organisation <- rbind.fill(Days_organisation, Month) # This adds the data to a bigger dataframe called Days_reason (which we set up earlier)
   rm(Month) 
@@ -208,7 +208,7 @@ colnames(Month) <- c("Region", "ONS Geography", "Code", "Name", "NHS", "Social C
 
 # Clean up Days_organisation ####
 Days_organisation <- Days_organisation %>% 
-  select(Name, NHS, `Social Care`, Both, Total, Period_year) %>% 
+  select(Name, NHS, `Social Care`, Both, Period_year) %>% 
   mutate(Name = gsub(" UA","", Name)) %>% 
   mutate(Name = gsub("Isle Of Wight", "Isle of Wight", Name)) %>% 
   mutate(Name = gsub("Medway Towns", "Medway", Name)) %>% 
@@ -216,11 +216,10 @@ Days_organisation <- Days_organisation %>%
   filter(!(Name %in% c("Resident in Scotland","Resident In Wales","Resident outside GB", "City Of London"))) %>% 
   mutate(NHS = gsub(",","", NHS),
          `Social Care` = gsub(",","",`Social Care`),
-         Both = gsub(",","",Both),
-         Total = gsub(",","",Total))
+         Both = gsub(",","",Both))
+
+unique(Days_organisation$Name)
 
 write.csv(Days_organisation, paste0(github_repo_dir,"/DToC_Days_Responsible_Organisation.csv"), row.names = FALSE)
 write.csv(Days_organisation, "~/Documents/Repositories/spc/DToC_Days_Responsible_Organisation.csv", row.names = FALSE)
-
-rm(list = ls())
 

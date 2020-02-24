@@ -33,7 +33,7 @@ DToC_theme = function(){
 }
 
 
-Days_organisation <- read_csv("./Delayed Transfers of Care/DToC_Days_Responsible_Organisation_created_July_2019.csv",col_types = cols(Name = col_character(),NHS = col_integer(),`Social Care` = col_integer(),Both = col_integer(),Total = col_integer(),Period_year = col_character())) %>% 
+Days_organisation <- read_csv("./Delayed Transfers of Care/DToC_Days_Responsible_Organisation_created_July_2019.csv",col_types = cols(Name = col_character(),NHS = col_integer(),`Social Care` = col_integer(),Both = col_integer(),Period_year = col_character())) %>% 
   mutate(Month = paste("01", Period_year, sep = " ")) %>% 
   mutate(Month = as.Date(Month, format = "%d %b %Y")) %>% 
   arrange(Month) %>% 
